@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>...</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root { --bg: #0d0d0d; --fg: #f0ece4; --accent: #c8b89a; --muted: #4a4540; }
@@ -22,9 +22,9 @@
       position: fixed; width: 600px; height: 600px; border-radius: 50%;
       background: radial-gradient(circle, rgba(200,184,154,0.07) 0%, transparent 70%);
       top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
-      animation: pulse 6s ease-in-out infinite;
+      animation: glowPulse 6s ease-in-out infinite;
     }
-    @keyframes pulse {
+    @keyframes glowPulse {
       0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
       50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
     }
@@ -33,51 +33,85 @@
       from { opacity: 0; transform: translateY(18px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     h1 {
       font-family: 'DM Serif Display', serif; font-size: clamp(4rem, 15vw, 10rem);
-      color: var(--fg); letter-spacing: -0.02em; line-height: 1; margin-bottom: 2rem;
-      display: flex; align-items: center; justify-content: center; gap: 0.15em;
+      color: var(--fg); letter-spacing: 0.05em; line-height: 1; margin-bottom: 2rem;
+      display: flex; justify-content: center; align-items: baseline; gap: 0.05em;
     }
-    .dot {
+    h1 .dot {
       display: inline-block;
-      animation: dotPulse 1.8s ease-in-out infinite;
-      transform-origin: center bottom;
+      animation: dotBounce 1.6s ease-in-out infinite;
     }
-    .dot:nth-child(1) { animation-delay: 0s; }
-    .dot:nth-child(2) { animation-delay: 0.3s; }
-    .dot:nth-child(3) { animation-delay: 0.6s; }
-    @keyframes dotPulse {
-      0%, 100% {
-        opacity: 0.2;
-        transform: translateY(0) scale(0.75);
-        color: var(--accent);
-        text-shadow: none;
-      }
-      50% {
-        opacity: 1;
-        transform: translateY(-12px) scale(1.1);
-        color: var(--fg);
-        text-shadow: 0 0 30px rgba(200,184,154,0.8), 0 0 60px rgba(200,184,154,0.4);
-      }
+    h1 .dot:nth-child(1) { animation-delay: 0s; }
+    h1 .dot:nth-child(2) { animation-delay: 0.2s; }
+    h1 .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes dotBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-0.3em); }
     }
+
     .divider { width: 40px; height: 1px; background: var(--accent); margin: 0 auto 2rem; opacity: 0.6; }
     p {
       font-size: clamp(0.75rem, 2vw, 0.9rem); font-weight: 300;
       letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
       opacity: 0; animation: fadeIn 1.4s ease 0.5s forwards;
     }
-    .lang-btn {
-      position: fixed; top: 2rem; right: 2rem; background: transparent;
-      border: 1px solid var(--muted); color: var(--accent); font-family: 'DM Mono', monospace;
-      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
-      padding: 0.5rem 1rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; z-index: 20;
+
+    .lang-wrapper {
+      position: fixed; top: 2rem; right: 2rem; z-index: 20;
+      font-family: 'DM Mono', monospace;
     }
-    .lang-btn:hover { border-color: var(--accent); color: var(--fg); }
+    .lang-trigger {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: transparent; border: 1px solid var(--muted);
+      color: var(--accent); font-family: inherit;
+      font-size: 0.68rem; letter-spacing: 0.13em; text-transform: uppercase;
+      padding: 0.5rem 0.9rem; cursor: pointer;
+      transition: border-color 0.2s, color 0.2s; white-space: nowrap; user-select: none;
+    }
+    .lang-trigger:hover { border-color: var(--accent); color: var(--fg); }
+    .lang-trigger .label { color: var(--muted); }
+    .lang-trigger .arrow { font-size: 0.5rem; transition: transform 0.22s; display: inline-block; }
+    .lang-wrapper.open .lang-trigger { border-color: var(--accent); color: var(--fg); }
+    .lang-wrapper.open .arrow { transform: rotate(180deg); }
+    .lang-menu {
+      position: absolute; top: calc(100% + 4px); right: 0;
+      border: 1px solid var(--muted); background: #111;
+      min-width: 100%; overflow: hidden;
+      max-height: 0; opacity: 0;
+      transition: max-height 0.25s ease, opacity 0.2s ease;
+      pointer-events: none;
+    }
+    .lang-wrapper.open .lang-menu { max-height: 120px; opacity: 1; pointer-events: all; }
+    .lang-option {
+      display: block; width: 100%; background: transparent; border: none;
+      color: var(--accent); font-family: 'DM Mono', monospace;
+      font-size: 0.68rem; letter-spacing: 0.13em; text-transform: uppercase;
+      padding: 0.55rem 0.9rem; cursor: pointer; text-align: left;
+      transition: background 0.15s, color 0.15s;
+    }
+    .lang-option:hover { background: rgba(200,184,154,0.07); color: var(--fg); }
+    .lang-option.active { color: var(--fg); }
+    .lang-option.active::after { content: ' ✓'; opacity: 0.4; }
   </style>
 </head>
 <body>
   <div class="glow"></div>
-  <button class="lang-btn" onclick="toggleLang()" id="langBtn">FR</button>
+
+  <div class="lang-wrapper" id="langWrapper">
+    <button class="lang-trigger" onclick="toggleMenu()">
+      <span class="label">Language :</span>
+      <span id="currentLang">English</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="lang-menu">
+      <button class="lang-option active" id="opt-en" onclick="setLang('en')">English</button>
+      <button class="lang-option" id="opt-fr" onclick="setLang('fr')">Français</button>
+    </div>
+  </div>
+
   <div class="container">
     <h1>
       <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
@@ -85,18 +119,27 @@
     <div class="divider"></div>
     <p id="msg">Currently under development, please wait.</p>
   </div>
+
   <script>
     const texts = {
-      en: { msg: "Currently under development, please wait.", btn: "FR" },
-      fr: { msg: "Actuellement en développement, veuillez patienter.", btn: "EN" }
+      en: { msg: "Currently under development, please wait.", label: "English" },
+      fr: { msg: "Actuellement en développement, veuillez patienter.", label: "Français" }
     };
     let lang = 'en';
-    function toggleLang() {
-      lang = lang === 'en' ? 'fr' : 'en';
-      document.getElementById('msg').textContent = texts[lang].msg;
-      document.getElementById('langBtn').textContent = texts[lang].btn;
-      document.documentElement.lang = lang;
+    function toggleMenu() { document.getElementById('langWrapper').classList.toggle('open'); }
+    function setLang(l) {
+      lang = l;
+      document.getElementById('msg').textContent = texts[l].msg;
+      document.getElementById('currentLang').textContent = texts[l].label;
+      document.documentElement.lang = l;
+      document.querySelectorAll('.lang-option').forEach(b => b.classList.remove('active'));
+      document.getElementById('opt-' + l).classList.add('active');
+      document.getElementById('langWrapper').classList.remove('open');
     }
+    document.addEventListener('click', e => {
+      if (!document.getElementById('langWrapper').contains(e.target))
+        document.getElementById('langWrapper').classList.remove('open');
+    });
   </script>
 </body>
 </html>
