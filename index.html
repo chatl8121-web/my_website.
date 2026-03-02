@@ -4,20 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>...</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@300;400&display=swap');
+
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root { --bg: #0d0d0d; --fg: #f0ece4; --accent: #c8b89a; --muted: #4a4540; }
+
     body {
-      background: var(--bg); color: var(--fg); font-family: 'DM Mono', monospace;
-      min-height: 100vh; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; overflow: hidden; position: relative;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'DM Mono', 'Courier New', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
     }
-    body::before {
-      content: ''; position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 10;
-    }
+
     .glow-bg {
       position: fixed; width: 600px; height: 600px; border-radius: 50%;
       background: radial-gradient(circle, rgba(200,184,154,0.07) 0%, transparent 70%);
@@ -28,7 +33,11 @@
       0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
       50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
     }
-    .container { text-align: center; z-index: 1; animation: fadeIn 1.4s ease forwards; }
+
+    .container {
+      text-align: center; z-index: 1;
+      animation: fadeIn 1.4s ease forwards;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(18px); }
       to { opacity: 1; transform: translateY(0); }
@@ -37,12 +46,12 @@
     /* Orb dots */
     .dots {
       display: flex; justify-content: center; align-items: center;
-      gap: 2rem; margin-bottom: 2.5rem; height: 80px;
+      gap: 2.5rem; margin-bottom: 2.5rem; height: 90px;
     }
     .dot {
-      width: 18px; height: 18px; border-radius: 50%;
-      background: radial-gradient(circle at 38% 35%, #fff 0%, #c8b89a 40%, #6b5c48 100%);
-      box-shadow: 0 0 6px 1px rgba(200,184,154,0.2);
+      width: 20px; height: 20px; border-radius: 50%;
+      background: radial-gradient(circle at 38% 35%, #888 0%, #5a4c3c 50%, #1e1a16 100%);
+      box-shadow: 0 0 6px 1px rgba(200,184,154,0.15);
       animation: orbPulse 2.4s ease-in-out infinite;
       flex-shrink: 0;
     }
@@ -53,26 +62,109 @@
     @keyframes orbPulse {
       0%, 100% {
         transform: scale(1);
-        box-shadow: 0 0 6px 1px rgba(200,184,154,0.2);
-        background: radial-gradient(circle at 38% 35%, #aaa 0%, #6b5c48 50%, #2a2420 100%);
+        box-shadow: 0 0 6px 2px rgba(200,184,154,0.15);
+        background: radial-gradient(circle at 38% 35%, #888 0%, #5a4c3c 50%, #1e1a16 100%);
       }
       50% {
-        transform: scale(1.6);
-        box-shadow: 0 0 28px 10px rgba(220,200,160,0.55), 0 0 60px 20px rgba(200,160,80,0.2);
+        transform: scale(1.9);
+        box-shadow: 0 0 30px 12px rgba(220,200,160,0.5), 0 0 70px 25px rgba(200,160,80,0.18);
         background: radial-gradient(circle at 38% 35%, #fff 0%, #e8d4a8 35%, #c8a060 70%, #7a5830 100%);
       }
     }
 
     .divider { width: 40px; height: 1px; background: var(--accent); margin: 0 auto 2rem; opacity: 0.6; }
+
     p {
-      font-size: clamp(0.75rem, 2vw, 0.9rem); font-weight: 300;
-      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: clamp(0.7rem, 2vw, 0.85rem); font-weight: 300;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
       opacity: 0; animation: fadeIn 1.4s ease 0.5s forwards;
     }
 
+    /* Language dropdown */
     .lang-wrapper {
       position: fixed; top: 2rem; right: 2rem; z-index: 20;
-      font-family: 'DM Mono', monospace;
+      font-family: 'DM Mono', 'Courier New', monospace;
     }
     .lang-trigger {
-      display: flex; align-items: center; gap: 0.5re
+      display: flex; align-items: center; gap: 0.5rem;
+      background: transparent; border: 1px solid var(--muted);
+      color: var(--accent); font-family: inherit;
+      font-size: 0.68rem; letter-spacing: 0.13em; text-transform: uppercase;
+      padding: 0.5rem 0.9rem; cursor: pointer;
+      transition: border-color 0.2s, color 0.2s; white-space: nowrap; user-select: none;
+    }
+    .lang-trigger:hover { border-color: var(--accent); color: var(--fg); }
+    .lang-trigger .label { color: var(--muted); }
+    .lang-trigger .arrow { font-size: 0.5rem; transition: transform 0.22s; display: inline-block; }
+    .lang-wrapper.open .lang-trigger { border-color: var(--accent); color: var(--fg); }
+    .lang-wrapper.open .arrow { transform: rotate(180deg); }
+    .lang-menu {
+      position: absolute; top: calc(100% + 4px); right: 0;
+      border: 1px solid var(--muted); background: #111;
+      min-width: 100%; overflow: hidden;
+      max-height: 0; opacity: 0;
+      transition: max-height 0.25s ease, opacity 0.2s ease;
+      pointer-events: none;
+    }
+    .lang-wrapper.open .lang-menu { max-height: 120px; opacity: 1; pointer-events: all; }
+    .lang-option {
+      display: block; width: 100%; background: transparent; border: none;
+      color: var(--accent); font-family: inherit;
+      font-size: 0.68rem; letter-spacing: 0.13em; text-transform: uppercase;
+      padding: 0.55rem 0.9rem; cursor: pointer; text-align: left;
+      transition: background 0.15s, color 0.15s;
+    }
+    .lang-option:hover { background: rgba(200,184,154,0.07); color: var(--fg); }
+    .lang-option.active { color: var(--fg); }
+    .lang-option.active::after { content: ' ✓'; opacity: 0.4; }
+  </style>
+</head>
+<body>
+  <div class="glow-bg"></div>
+
+  <div class="lang-wrapper" id="langWrapper">
+    <button class="lang-trigger" onclick="toggleMenu()">
+      <span class="label">Language :</span>
+      <span id="currentLang">English</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="lang-menu">
+      <button class="lang-option active" id="opt-en" onclick="setLang('en')">English</button>
+      <button class="lang-option" id="opt-fr" onclick="setLang('fr')">Français</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div class="divider"></div>
+    <p id="msg">Currently under development, please wait.</p>
+  </div>
+
+  <script>
+    const texts = {
+      en: { msg: "Currently under development, please wait.", label: "English" },
+      fr: { msg: "Actuellement en développement, veuillez patienter.", label: "Français" }
+    };
+    let lang = 'en';
+    function toggleMenu() { document.getElementById('langWrapper').classList.toggle('open'); }
+    function setLang(l) {
+      lang = l;
+      document.getElementById('msg').textContent = texts[l].msg;
+      document.getElementById('currentLang').textContent = texts[l].label;
+      document.documentElement.lang = l;
+      document.querySelectorAll('.lang-option').forEach(b => b.classList.remove('active'));
+      document.getElementById('opt-' + l).classList.add('active');
+      document.getElementById('langWrapper').classList.remove('open');
+    }
+    document.addEventListener('click', e => {
+      if (!document.getElementById('langWrapper').contains(e.target))
+        document.getElementById('langWrapper').classList.remove('open');
+    });
+  </script>
+</body>
+</html>
