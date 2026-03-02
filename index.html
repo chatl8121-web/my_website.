@@ -4,96 +4,72 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>...</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg: #0d0d0d; --fg: #f0ece4; --accent: #c8b89a; --muted: #4a4540; }
     body {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: #0a0a0a;
-      color: #f0f0f0;
-      font-family: 'Georgia', serif;
+      background: var(--bg); color: var(--fg); font-family: 'DM Mono', monospace;
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; overflow: hidden; position: relative;
     }
-
-    .lang-btn {
-      position: fixed;
-      top: 1.5rem;
-      right: 1.5rem;
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #f0f0f0;
-      padding: 0.4rem 1rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
-      cursor: pointer;
-      transition: all 0.3s;
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 10;
     }
-    .lang-btn:hover {
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(255,255,255,0.6);
+    .glow {
+      position: fixed; width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,184,154,0.07) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+      animation: pulse 6s ease-in-out infinite;
     }
-
-    h1 {
-      font-size: clamp(3rem, 10vw, 7rem);
-      font-weight: 400;
-      letter-spacing: 0.05em;
-      margin-bottom: 2rem;
-      color: #fff;
-    }
-
-    p {
-      font-size: 1rem;
-      letter-spacing: 0.2em;
-      color: rgba(255,255,255,0.45);
-      text-transform: uppercase;
-    }
-
-    .dot {
-      display: inline-block;
-      width: 4px;
-      height: 4px;
-      background: rgba(255,255,255,0.3);
-      border-radius: 50%;
-      margin: 2rem auto 0;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
     @keyframes pulse {
-      0%, 100% { opacity: 0.2; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.4); }
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
     }
+    .container { text-align: center; z-index: 1; animation: fadeIn 1.4s ease forwards; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1 {
+      font-family: 'DM Serif Display', serif; font-size: clamp(4rem, 15vw, 10rem);
+      color: var(--fg); letter-spacing: -0.02em; line-height: 1; margin-bottom: 2rem;
+    }
+    .divider { width: 40px; height: 1px; background: var(--accent); margin: 0 auto 2rem; opacity: 0.6; }
+    p {
+      font-size: clamp(0.75rem, 2vw, 0.9rem); font-weight: 300;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+      opacity: 0; animation: fadeIn 1.4s ease 0.5s forwards;
+    }
+    .lang-btn {
+      position: fixed; top: 2rem; right: 2rem; background: transparent;
+      border: 1px solid var(--muted); color: var(--accent); font-family: 'DM Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.5rem 1rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; z-index: 20;
+    }
+    .lang-btn:hover { border-color: var(--accent); color: var(--fg); }
   </style>
 </head>
 <body>
-
+  <div class="glow"></div>
   <button class="lang-btn" onclick="toggleLang()" id="langBtn">FR</button>
-
-  <h1>...</h1>
-  <p id="msg">Currently under development, please wait.</p>
-  <span class="dot"></span>
-
+  <div class="container">
+    <h1>...</h1>
+    <div class="divider"></div>
+    <p id="msg">Currently under development, please wait.</p>
+  </div>
   <script>
-    const translations = {
-      en: {
-        msg: "Currently under development, please wait.",
-        btn: "FR"
-      },
-      fr: {
-        msg: "Actuellement en développement, veuillez patienter.",
-        btn: "EN"
-      }
+    const texts = {
+      en: { msg: "Currently under development, please wait.", btn: "FR" },
+      fr: { msg: "Actuellement en développement, veuillez patienter.", btn: "EN" }
     };
-
-    let lang = "en";
-
+    let lang = 'en';
     function toggleLang() {
-      lang = lang === "en" ? "fr" : "en";
-      document.getElementById("msg").textContent = translations[lang].msg;
-      document.getElementById("langBtn").textContent = translations[lang].btn;
+      lang = lang === 'en' ? 'fr' : 'en';
+      document.getElementById('msg').textContent = texts[lang].msg;
+      document.getElementById('langBtn').textContent = texts[lang].btn;
       document.documentElement.lang = lang;
     }
   </script>
