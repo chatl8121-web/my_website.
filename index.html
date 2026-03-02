@@ -36,6 +36,29 @@
     h1 {
       font-family: 'DM Serif Display', serif; font-size: clamp(4rem, 15vw, 10rem);
       color: var(--fg); letter-spacing: -0.02em; line-height: 1; margin-bottom: 2rem;
+      display: flex; align-items: center; justify-content: center; gap: 0.15em;
+    }
+    .dot {
+      display: inline-block;
+      animation: dotPulse 1.8s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+    .dot:nth-child(1) { animation-delay: 0s; }
+    .dot:nth-child(2) { animation-delay: 0.3s; }
+    .dot:nth-child(3) { animation-delay: 0.6s; }
+    @keyframes dotPulse {
+      0%, 100% {
+        opacity: 0.2;
+        transform: translateY(0) scale(0.75);
+        color: var(--accent);
+        text-shadow: none;
+      }
+      50% {
+        opacity: 1;
+        transform: translateY(-12px) scale(1.1);
+        color: var(--fg);
+        text-shadow: 0 0 30px rgba(200,184,154,0.8), 0 0 60px rgba(200,184,154,0.4);
+      }
     }
     .divider { width: 40px; height: 1px; background: var(--accent); margin: 0 auto 2rem; opacity: 0.6; }
     p {
@@ -56,7 +79,9 @@
   <div class="glow"></div>
   <button class="lang-btn" onclick="toggleLang()" id="langBtn">FR</button>
   <div class="container">
-    <h1>...</h1>
+    <h1>
+      <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+    </h1>
     <div class="divider"></div>
     <p id="msg">Currently under development, please wait.</p>
   </div>
