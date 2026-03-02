@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>...</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      font-family: 'Georgia', serif;
+    }
+
+    .lang-btn {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #f0f0f0;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .lang-btn:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    h1 {
+      font-size: clamp(3rem, 10vw, 7rem);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      margin-bottom: 2rem;
+      color: #fff;
+    }
+
+    p {
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+      margin: 2rem auto 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="lang-btn" onclick="toggleLang()" id="langBtn">FR</button>
+
+  <h1>...</h1>
+  <p id="msg">Currently under development, please wait.</p>
+  <span class="dot"></span>
+
+  <script>
+    const translations = {
+      en: {
+        msg: "Currently under development, please wait.",
+        btn: "FR"
+      },
+      fr: {
+        msg: "Actuellement en développement, veuillez patienter.",
+        btn: "EN"
+      }
+    };
+
+    let lang = "en";
+
+    function toggleLang() {
+      lang = lang === "en" ? "fr" : "en";
+      document.getElementById("msg").textContent = translations[lang].msg;
+      document.getElementById("langBtn").textContent = translations[lang].btn;
+      document.documentElement.lang = lang;
+    }
+  </script>
+</body>
+</html>
